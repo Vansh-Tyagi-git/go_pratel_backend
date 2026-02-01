@@ -15,9 +15,17 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const docs = await Requirement.find().sort({ createdAt: -1 });
+  const { hireType } = req.query;
+
+  const filter = {};
+  if (hireType && ["planner", "performer", "crew"].includes(String(hireType))) {
+    filter.hireType = String(hireType);
+  }
+
+  const docs = await Requirement.find(filter).sort({ createdAt: -1 });
   res.json(docs);
 });
+
 
 router.get("/:id", async (req, res) => {
   const doc = await Requirement.findById(req.params.id);
